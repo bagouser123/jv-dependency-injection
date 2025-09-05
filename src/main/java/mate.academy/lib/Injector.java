@@ -27,15 +27,16 @@ public class Injector {
             Field[] declaredField = clazz.getDeclaredFields();
             for (Field field : declaredField) {
                 if (field.isAnnotationPresent(Inject.class)) {
-                    Object instance = getInstance(field.getType());
+                    Object fieldInstance = getInstance(field.getType());
 
                     classImplementationInstance = createInstance(clazz);
 
                     try {
                         field.setAccessible(true);
-                        field.set(classImplementationInstance, instance);
+                        field.set(classImplementationInstance, fieldInstance);
                     } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("There is @component teg missing in the "
+                                + "implemention class or reflection failures", e);
                     }
                 }
             }
@@ -58,19 +59,19 @@ public class Injector {
             Object instance = constructor.newInstance();
             instances.put(clazz, instance);
             return instance;
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException
-                 | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("There is missing @component on a dependency or some reflection failures", e);
         }
     }
 
+    private static final Map<Class<?>, Class<?>> byMap = Map.of(
+            ProductParser.class, ProductParserImpl.class,
+            ProductService.class, ProductServiceImpl.class,
+            FileReaderService.class, FileReaderServiceImpl.class);
+
     private Class<?> findImplementation(Class<?> interfaceClazz) {
-        Map<Class<?>, Class<?>> classImplement = new HashMap<>();
-        classImplement.put(ProductParser.class, ProductParserImpl.class);
-        classImplement.put(ProductService.class, ProductServiceImpl.class);
-        classImplement.put(FileReaderService.class, FileReaderServiceImpl.class);
         if (interfaceClazz.isInterface()) {
-            return classImplement.get(interfaceClazz);
+            return byMap.get(interfaceClazz);
         }
         return interfaceClazz;
     }
