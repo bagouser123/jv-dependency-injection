@@ -41,7 +41,7 @@ public class Injector {
                         field.set(classImplementationInstance, fieldInstance);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException("There is @component teg missing in the "
-                                + "implemention class or reflection failures", e);
+                                + clazz + " class or reflection failures", e);
                     }
                 }
             }
@@ -50,8 +50,8 @@ public class Injector {
             }
             return classImplementationInstance;
         }
-        throw new RuntimeException("There is unsupported class given"
-                + " or not exist constructor!");
+        throw new RuntimeException("Unsupproted class " + interfaceClazz + " given"
+                + " and cannot be instantiated!");
     }
 
     private Object createInstance(Class<?> clazz) {
@@ -65,8 +65,8 @@ public class Injector {
             instances.put(clazz, instance);
             return instance;
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("There is missing @component on a dependency or "
-                   + "some reflection failures", e);
+            throw new RuntimeException("There is @component teg missing in the "
+                    + clazz + " class or reflection failures", e);
         }
     }
 
