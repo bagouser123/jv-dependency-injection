@@ -49,7 +49,7 @@ public class Injector {
             return classImplementationInstance;
         }
         throw new RuntimeException("There is a reflection failure "
-                + "or class" + clazz + "not annotated with component" );
+                + "or class" + clazz + "not annotated with component");
     }
 
     private Object createInstance(Class<?> clazz) {
