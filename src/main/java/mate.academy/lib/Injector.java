@@ -12,12 +12,10 @@ import mate.academy.service.impl.ProductParserImpl;
 import mate.academy.service.impl.ProductServiceImpl;
 
 public class Injector {
-
     private static final Map<Class<?>, Class<?>> byMap = Map.of(
             ProductParser.class, ProductParserImpl.class,
             ProductService.class, ProductServiceImpl.class,
             FileReaderService.class, FileReaderServiceImpl.class);
-
     private static final Injector injector = new Injector();
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
@@ -40,8 +38,8 @@ public class Injector {
                         field.setAccessible(true);
                         field.set(classImplementationInstance, fieldInstance);
                     } catch (IllegalAccessException e) {
-                        throw new RuntimeException("There is @component teg missing in the "
-                                + clazz + " class or reflection failures", e);
+                        throw new RuntimeException("Class " + clazz + " in not annotated with "
+                                + "component and cannot be instantiated", e);
                     }
                 }
             }
@@ -50,8 +48,8 @@ public class Injector {
             }
             return classImplementationInstance;
         }
-        throw new RuntimeException("Unsupproted class " + interfaceClazz + " given"
-                + " and cannot be instantiated!");
+        throw new RuntimeException("There is a reflection failure "
+                + "or class" + clazz + "not annotated with component" );
     }
 
     private Object createInstance(Class<?> clazz) {
@@ -65,8 +63,8 @@ public class Injector {
             instances.put(clazz, instance);
             return instance;
         } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("There is @component teg missing in the "
-                    + clazz + " class or reflection failures", e);
+            throw new RuntimeException("There is missing @component on a dependency or "
+                   + "some reflection failures", e);
         }
     }
 
