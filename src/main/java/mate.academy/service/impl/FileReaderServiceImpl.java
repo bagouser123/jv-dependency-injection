@@ -8,7 +8,6 @@ import mate.academy.lib.Component;
 import mate.academy.service.FileReaderService;
 
 @Component
-
 public class FileReaderServiceImpl implements FileReaderService {
 
     @Override
